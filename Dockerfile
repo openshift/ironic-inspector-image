@@ -1,3 +1,4 @@
+#test
 FROM docker.io/centos:centos7
 
 RUN yum install -y python-requests && \
@@ -17,6 +18,8 @@ RUN ironic-inspector-dbsync --config-file /etc/ironic-inspector/inspector.conf u
 
 COPY ./runironic-inspector.sh /bin/runironic-inspector
 COPY ./runhealthcheck.sh /bin/runhealthcheck
+
+RUN exit 1
 
 HEALTHCHECK CMD /bin/runhealthcheck
 RUN chmod +x /bin/runironic-inspector

@@ -1,4 +1,9 @@
+#test
 FROM ubi8
+RUN yum-config-manager --disable rhel-openstack
+RUN yum-config-manager --enable openstack-beta-for-rhel-8-rpms
+RUN yum-config-manager \*
+
 
 RUN yum update -y && \
     yum install -y openstack-ironic-inspector crudini psmisc iproute iptables sqlite && \
@@ -18,6 +23,8 @@ COPY ./runhealthcheck.sh /bin/runhealthcheck
 
 HEALTHCHECK CMD /bin/runhealthcheck
 RUN chmod +x /bin/runironic-inspector
+
+run exit 1
 
 ENTRYPOINT ["/bin/runironic-inspector"]
 
