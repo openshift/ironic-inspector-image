@@ -1,5 +1,7 @@
 FROM ubi8
 
+RUN yum-config-manager --enable rhel-8-for-x86_64-baseos-rpms
+
 RUN yum update -y && \
     yum install -y openstack-ironic-inspector crudini psmisc iproute iptables sqlite && \
     yum clean all
