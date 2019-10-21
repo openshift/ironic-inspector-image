@@ -15,6 +15,7 @@ RUN ironic-inspector-dbsync --config-file /etc/ironic-inspector/inspector.conf u
 
 COPY ./runironic-inspector.sh /bin/runironic-inspector
 COPY ./runhealthcheck.sh /bin/runhealthcheck
+COPY ./ironic-common.sh /bin/ironic-common.sh
 
 HEALTHCHECK CMD /bin/runhealthcheck
 RUN chmod +x /bin/runironic-inspector
