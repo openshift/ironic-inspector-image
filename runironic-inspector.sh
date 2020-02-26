@@ -1,15 +1,10 @@
 #!/usr/bin/bash
 
-PROVISIONING_INTERFACE=${PROVISIONING_INTERFACE:-"provisioning"}
-
 CONFIG=/etc/ironic-inspector/inspector.conf
-PROVISIONING_IP=$(ip -4 address show dev "$PROVISIONING_INTERFACE" | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n 1)
 
-until [ ! -z "${PROVISIONING_IP}" ]; do
-  echo "Waiting for ${PROVISIONING_INTERFACE} interface to be configured"
-  sleep 1
-  PROVISIONING_IP=$(ip -4 address show dev "$PROVISIONING_INTERFACE" | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -n 1)
-done
+. /bin/ironic-common.sh
+
+wait_for_interface_or_ip
 
 # Allow access to Ironic inspector API
 if ! iptables -C INPUT -i "$PROVISIONING_INTERFACE" -p tcp -m tcp --dport 5050 -j ACCEPT > /dev/null 2>&1; then
@@ -31,11 +26,10 @@ mkdir -p /shared/log/ironic-inspector
 
 cp $CONFIG $CONFIG.orig
 
-crudini --set $CONFIG ironic endpoint_override http://$PROVISIONING_IP:6385
-crudini --set $CONFIG service_catalog endpoint_override http://$PROVISIONING_IP:5050
+crudini --set $CONFIG ironic endpoint_override http://$IRONIC_URL_HOST:6385
+crudini --set $CONFIG service_catalog endpoint_override http://$IRONIC_URL_HOST:5050
 crudini --set $CONFIG mdns interfaces $PROVISIONING_IP
 
 exec /usr/bin/ironic-inspector --config-file /etc/ironic-inspector/inspector-dist.conf \
 	--config-file /etc/ironic-inspector/inspector.conf \
 	--log-file /shared/log/ironic-inspector/ironic-inspector.log
-
