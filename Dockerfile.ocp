@@ -1,6 +1,6 @@
 FROM ubi8
 
-RUN dnf update -y && \
+RUN dnf upgrade -y  --exclude=systemd && \
     dnf install -y openstack-ironic-inspector crudini psmisc iproute sqlite && \
     mkdir -p /var/lib/ironic-inspector && \
     sqlite3 /var/lib/ironic-inspector/ironic-inspector.db "pragma journal_mode=wal" && \
