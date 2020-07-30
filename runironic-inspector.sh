@@ -1,11 +1,6 @@
 #!/usr/bin/bash
 
 CONFIG=/etc/ironic-inspector/inspector.conf
-USE_HTTP_BASIC=${USE_HTTP_BASIC:-false}
-INSPECTOR_HTTP_BASIC_USERNAME=${INSPECTOR_HTTP_BASIC_USERNAME:-"change_me"}
-INSPECTOR_HTTP_BASIC_PASSWORD=${INSPECTOR_HTTP_BASIC_PASSWORD:-"change_me"}
-IRONIC_HTTP_BASIC_USERNAME=${IRONIC_HTTP_BASIC_USERNAME:-"change_me"}
-IRONIC_HTTP_BASIC_PASSWORD=${IRONIC_HTTP_BASIC_PASSWORD:-"change_me"}
 
 . /bin/ironic-common.sh
 
@@ -16,15 +11,20 @@ cp $CONFIG $CONFIG.orig
 crudini --set $CONFIG ironic endpoint_override http://$IRONIC_URL_HOST:6385
 crudini --set $CONFIG service_catalog endpoint_override http://$IRONIC_URL_HOST:5050
 
-if [ "$USE_HTTP_BASIC" = "true" ]; then
-        crudini --set $CONFIG DEFAULT auth_strategy http_basic
-        crudini --set $CONFIG DEFAULT http_basic_auth_user_file /shared/htpasswd-ironic-inspector
-        crudini --set $CONFIG ironic auth_type http_basic
-        crudini --set $CONFIG ironic username $IRONIC_HTTP_BASIC_USERNAME
-        crudini --set $CONFIG ironic password $IRONIC_HTTP_BASIC_PASSWORD
 
-        htpasswd -nbB $INSPECTOR_HTTP_BASIC_USERNAME $INSPECTOR_HTTP_BASIC_PASSWORD > /shared/htpasswd-ironic-inspector
+# Configure HTTP basic auth for API server
+HTPASSWD_FILE=/etc/ironic-inspector/htpasswd
+if [ -n "${HTTP_BASIC_HTPASSWD}" ]; then
+    printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}"
+    crudini --set $CONFIG DEFAULT auth_strategy http_basic
+    crudini --set $CONFIG DEFAULT http_basic_auth_user_file "${HTPASSWD_FILE}"
 fi
 
-exec /usr/bin/ironic-inspector --config-file /etc/ironic-inspector/inspector-dist.conf \
-	--config-file /etc/ironic-inspector/inspector.conf
+# Configure auth for ironic client
+CONFIG_OPTIONS="--config-file /etc/ironic-inspector/inspector-dist.conf --config-file ${CONFIG}"
+auth_config_file="/auth/ironic/auth-config"
+if [ -f ${auth_config_file} ]; then
+    CONFIG_OPTIONS+=" --config-file ${auth_config_file}"
+fi
+
+exec /usr/bin/ironic-inspector $CONFIG_OPTIONS
