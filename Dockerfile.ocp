@@ -1,12 +1,16 @@
 FROM ubi8
 
 RUN dnf update -y && \
-    dnf install -y openstack-ironic-inspector crudini psmisc iproute sqlite && \
+    dnf install -y crudini psmisc iproute sqlite && \
     mkdir -p /var/lib/ironic-inspector && \
     sqlite3 /var/lib/ironic-inspector/ironic-inspector.db "pragma journal_mode=wal" && \
     dnf remove -y sqlite && \
     dnf clean all && \
     rm -rf /var/cache/{yum,dnf}/*
+
+RUN dnf install -y wget && \
+    wget -P /tmp http://download.eng.bos.redhat.com/brewroot/vol/rhel-8/packages/openstack-ironic-inspector/10.2.1/0.20200729153735.7ff52c7.el8ost/noarch/openstack-ironic-inspector-10.2.1-0.20200729153735.7ff52c7.el8ost.noarch.rpm && \
+    dnf install -y /tmp/openstack-ironic-inspector-10.2.1-0.20200729153735.7ff52c7.el8ost.noarch.rpm
 
 COPY ./inspector.conf /tmp/inspector.conf
 RUN crudini --merge /etc/ironic-inspector/inspector.conf < /tmp/inspector.conf && \
