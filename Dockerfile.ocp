@@ -1,7 +1,9 @@
 FROM ubi8
 
-RUN dnf update -y && \
-    dnf install -y openstack-ironic-inspector crudini psmisc iproute sqlite && \
+COPY ./main-packages-list.txt /tmp/main-packages-list.txt
+
+RUN dnf upgrade -y && \
+    dnf install -y $(cat /tmp/main-packages-list.txt) && \
     mkdir -p /var/lib/ironic-inspector && \
     sqlite3 /var/lib/ironic-inspector/ironic-inspector.db "pragma journal_mode=wal" && \
     dnf remove -y sqlite && \
@@ -22,4 +24,3 @@ HEALTHCHECK CMD /bin/runhealthcheck
 RUN chmod +x /bin/runironic-inspector
 
 ENTRYPOINT ["/bin/runironic-inspector"]
-
