@@ -1,6 +1,8 @@
 FROM registry.svc.ci.openshift.org/ocp/builder:rhel-8-base-openshift-4.6
 
-COPY ./main-packages-list.txt /tmp/main-packages-list.txt
+ARG PKGS_LIST=main-packages-list.txt
+
+COPY ${PKGS_LIST} /tmp/main-packages-list.txt
 
 RUN dnf upgrade -y && \
     dnf install -y $(cat /tmp/main-packages-list.txt) && \
