@@ -12,12 +12,7 @@ RUN dnf upgrade -y && \
     dnf clean all && \
     rm -rf /var/cache/{yum,dnf}/*
 
-COPY ./inspector.conf /tmp/inspector.conf
-RUN crudini --merge /etc/ironic-inspector/inspector.conf < /tmp/inspector.conf && \
-    rm /tmp/inspector.conf
-
-RUN ironic-inspector-dbsync --config-file /etc/ironic-inspector/inspector.conf upgrade 
-
+COPY ./inspector.conf.j2 /etc/ironic-inspector/ironic-inspector.conf.j2
 COPY ./runironic-inspector.sh /bin/runironic-inspector
 COPY ./runhealthcheck.sh /bin/runhealthcheck
 COPY ./ironic-common.sh /bin/ironic-common.sh
