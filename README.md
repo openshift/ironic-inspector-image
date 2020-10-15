@@ -1,5 +1,4 @@
-ironic-inspector-image
-======================
+# ironic-inspector-image
 
 This repo contains the files needed to build the Ironic Inspector images used by Metal3.
 
