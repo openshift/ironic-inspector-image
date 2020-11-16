@@ -2,6 +2,8 @@
 
 CONFIG=/etc/ironic-inspector/inspector.conf
 
+export IRONIC_INSPECTOR_ENABLE_DISCOVERY=${IRONIC_INSPECTOR_ENABLE_DISCOVERY:-false}
+
 . /bin/ironic-common.sh
 
 wait_for_interface_or_ip
@@ -18,6 +20,11 @@ if [ -n "${HTTP_BASIC_HTPASSWD}" ]; then
     printf "%s\n" "${HTTP_BASIC_HTPASSWD}" >"${HTPASSWD_FILE}"
     crudini --set $CONFIG DEFAULT auth_strategy http_basic
     crudini --set $CONFIG DEFAULT http_basic_auth_user_file "${HTPASSWD_FILE}"
+fi
+
+if [[ "$IRONIC_INSPECTOR_ENABLE_DISCOVERY" == "true" ]]; then
+    crudini --set $CONFIG processing node_not_found_hook enroll
+    crudini --set $CONFIG discovery enroll_node_driver ipmi
 fi
 
 # Configure auth for ironic client
