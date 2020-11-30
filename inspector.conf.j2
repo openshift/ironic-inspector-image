@@ -22,6 +22,7 @@ auth_type = none
 endpoint_override = {{ env.IRONIC_BASE_URL }}
 {% if env.IRONIC_TLS_SETUP == "true" %}
 cafile = {{ env.IRONIC_CACERT_FILE }}
+insecure = {{ env.IRONIC_INSECURE }}
 {% endif %}
 
 [processing]
