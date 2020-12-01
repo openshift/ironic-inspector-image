@@ -6,6 +6,8 @@ export IRONIC_INSPECTOR_ENABLE_DISCOVERY=${IRONIC_INSPECTOR_ENABLE_DISCOVERY:-fa
 
 export IRONIC_CERT_FILE=/certs/ironic/tls.crt
 export IRONIC_CACERT_FILE=/certs/ca/ironic/tls.crt
+export IRONIC_INSECURE=${IRONIC_INSECURE:-false}
+
 export IRONIC_INSPECTOR_CACERT_FILE=/certs/ca/ironic-inspector/tls.crt
 export IRONIC_INSPECTOR_CERT_FILE=/certs/ironic-inspector/tls.crt
 export IRONIC_INSPECTOR_KEY_FILE=/certs/ironic-inspector/tls.key
