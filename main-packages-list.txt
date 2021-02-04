@@ -1,5 +1,5 @@
 crudini
 iproute
-openstack-ironic-inspector
+openstack-ironic-inspector >= 10.4.1-0.20201103162859.ce6cee6.el8
 psmisc
 sqlite
