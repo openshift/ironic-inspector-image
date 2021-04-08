@@ -1,6 +1,6 @@
 crudini
 iproute
 openstack-ironic-inspector >= 10.5.1-0.20210106171219.2fff24d.el8
-python3-ironic-lib >= 4.5.1-0.20210227011240.e7a35e4.el8
+python3-ironic-lib >= 4.6.2-0.20210324125107.5d54fe0.el8
 psmisc
 sqlite
