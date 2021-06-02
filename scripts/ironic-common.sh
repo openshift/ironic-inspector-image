@@ -1,4 +1,21 @@
-export PROVISIONING_INTERFACE=${PROVISIONING_INTERFACE:-"provisioning"}
+function get_provisioning_interface() {
+  if [ -n "${PROVISIONING_INTERFACE}" ]; then
+    # don't override the PROVISIONING_INTERFACE if one is provided
+    echo ${PROVISIONING_INTERFACE}
+    return
+  fi
+
+  mac_env_name=MAC_${NODE_NAME}
+  mac=${!mac_env_name}
+  if [ -n "$mac" ]; then
+    export PROVISIONING_INTERFACE=$(ip -br link show up | grep "$mac" | cut -f 1 -d ' ')
+  else
+    export PROVISIONING_INTERFACE="provisioning"
+  fi
+  echo ${PROVISIONING_INTERFACE}
+}
+
+export PROVISIONING_INTERFACE=$(get_provisioning_interface)
 
 # Wait for the interface or IP to be up, sets $IRONIC_IP
 function get_ironic_ip() {
