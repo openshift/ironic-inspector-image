@@ -1,6 +1,8 @@
-ironic-inspector-image
-======================
+# This repository is deprecated and no longer maintained
 
-This repo contains the files needed to build the Ironic Inspector images used by Metal3.
+This repository is not accepting Pull Requests anymore.
 
-When updated, builds are automatically triggered on https://quay.io/repository/metal3-io/ironic-inspector/
+The content of this repository has been moved and merged with the
+[ironic-image repository](https://github.com/openshift/ironic-image),
+if you'd like to continue contributing to the project, please submit all
+changes there.
